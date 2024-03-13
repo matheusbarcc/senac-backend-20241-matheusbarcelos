@@ -42,7 +42,7 @@ public class PessoaRepository implements BaseRepository<Pessoa>{
 	    PreparedStatement pstmt = null;
 	    boolean excluiu = false;
 
-	    String query = "DELETE FROM pessoa WHERE id = ?";
+	    String query = "DELETE FROM pessoa WHERE idpessoa = ?";
 
 	    try {
 	        pstmt = conn.prepareStatement(query);
