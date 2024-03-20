@@ -11,7 +11,6 @@ public class Pessoa {
 	private String cpf;
 	private String tipo;
 	
-	
 	public Pessoa() {
 		super();
 	}
