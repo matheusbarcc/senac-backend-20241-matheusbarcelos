@@ -22,8 +22,6 @@ public class Vacinacao {
 		this.avaliacao = avaliacao;
 	}
 
-
-
 	public int getId() {
 		return id;
 	}

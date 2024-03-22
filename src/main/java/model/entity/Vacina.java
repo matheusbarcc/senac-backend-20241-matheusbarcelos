@@ -11,7 +11,7 @@ public class Vacina {
 	private int estagio;
 	
 	public Vacina() {
-		super();
+		
 	}
 
 	public Vacina(int id, String nome, String paisOrigem, Pessoa pesquisadorResponsavel, LocalDate dataInicioPesquisa,

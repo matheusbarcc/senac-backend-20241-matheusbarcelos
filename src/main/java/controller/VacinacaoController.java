@@ -12,27 +12,26 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-
-import services.PessoaService;
 import model.entity.Pessoa;
+import model.entity.Vacinacao;
+import services.VacinacaoService;
 
-@Path("/pessoa")
-public class PessoaController {
-
-	private PessoaService service = new PessoaService();
+@Path("/vacinacao")
+public class VacinacaoController {
+	private VacinacaoService service = new VacinacaoService();
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Pessoa salvar(Pessoa novaPessoa) throws ControleVacinasException {
-		return service.salvar(novaPessoa);
+	public Vacinacao salvar(Vacinacao novaVacinacao) throws ControleVacinasException {
+		return service.salvar(novaVacinacao);
 	}
 	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public boolean atualizar(Pessoa pessoaEditada) throws ControleVacinasException {
-		return service.atualizar(pessoaEditada);
+	public boolean atualizar(Vacinacao vacinacaoEditada) throws ControleVacinasException {
+		return service.atualizar(vacinacaoEditada);
 	}
 	
 	@DELETE
@@ -43,13 +42,13 @@ public class PessoaController {
 	
 	@GET
 	@Path("/{id}")
-	public Pessoa consultarPorId(@PathParam("id") int id) {
+	public Vacinacao consultarPorId(@PathParam("id") int id) {
 		return service.consultarPorId(id);
 	}
 	
 	@GET
 	@Path("/todas")
-	public List<Pessoa> consultarTodas(){
+	public List<Vacinacao> consultarTodas(){
 		return service.consultarTodas();
 	}
 }

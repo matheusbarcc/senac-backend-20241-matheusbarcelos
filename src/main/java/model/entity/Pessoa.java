@@ -1,84 +1,76 @@
 package model.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Pessoa {
 	
-	private int idpessoa;
-	private String nome;
-	private LocalDate dtnascimento;
-	private String sexo;
+	private int id;
+	private String nome; 
 	private String cpf;
-	private String tipo;
+	private char sexo;
+	private LocalDate dataNascimento;
+	private int tipo;
+	private ArrayList<Vacinacao> vacinas;
 	
 	public Pessoa() {
-		super();
+		
 	}
 
-	public Pessoa(int idpessoa, String nome, LocalDate dtnascimento, String sexo, String cpf, String tipo) {
+	public Pessoa(int id, String nome, String cpf, char sexo, LocalDate dataNascimento, int tipo,
+			ArrayList<Vacinacao> vacinas) {
 		super();
-		this.idpessoa = idpessoa;
+		this.id = id;
 		this.nome = nome;
-		this.dtnascimento = dtnascimento;
-		this.sexo = sexo;
 		this.cpf = cpf;
+		this.sexo = sexo;
+		this.dataNascimento = dataNascimento;
 		this.tipo = tipo;
+		this.vacinas = vacinas;
 	}
 
-	public int getIdpessoa() {
-		return idpessoa;
+	public int getId() {
+		return id;
 	}
-
-
-	public void setIdpessoa(int idpessoa) {
-		this.idpessoa = idpessoa;
+	public void setId(int id) {
+		this.id = id;
 	}
-
-
 	public String getNome() {
 		return nome;
 	}
-
-
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-
-
-	public LocalDate getDtnascimento() {
-		return dtnascimento;
-	}
-
-
-	public void setDtnascimento(LocalDate dtnascimento) {
-		this.dtnascimento = dtnascimento;
-	}
-
-
-	public String getSexo() {
-		return sexo;
-	}
-
-
-	public void setSexo(String sexo) {
-		this.sexo = sexo;
-	}
-
-
 	public String getCpf() {
 		return cpf;
 	}
-
-
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
 	}
-
-	public String getTipo() {
+	public char getSexo() {
+		return sexo;
+	}
+	public void setSexo(char sexo) {
+		this.sexo = sexo;
+	}
+	public LocalDate getDataNascimento() {
+		return dataNascimento;
+	}
+	public void setDataNascimento(LocalDate dataNascimento) {
+		this.dataNascimento = dataNascimento;
+	}
+	public int getTipo() {
 		return tipo;
 	}
-
-	public void setTipo(String tipo) {
+	public void setTipo(int tipo) {
 		this.tipo = tipo;
+	}
+
+	public ArrayList<Vacinacao> getVacinas() {
+		return vacinas;
+	}
+
+	public void setVacinas(ArrayList<Vacinacao> vacinas) {
+		this.vacinas = vacinas;
 	}
 }

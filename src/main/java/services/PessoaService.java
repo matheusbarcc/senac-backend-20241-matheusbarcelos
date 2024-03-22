@@ -7,46 +7,61 @@ import model.entity.Pessoa;
 import model.repository.PessoaRepository;
 
 public class PessoaService {
-	
-	private PessoaRepository repository = new PessoaRepository();
 
-	public Pessoa salvar(Pessoa novaPessoa) throws ControleVacinasException{
-		validarPessoa(novaPessoa);
+	private PessoaRepository repository = new PessoaRepository();
+	
+	public Pessoa salvar(Pessoa novaPessoa) throws ControleVacinasException {
+		validarCamposObrigatorios(novaPessoa);
+		
+		validarCpf(novaPessoa);
+		
 		return repository.salvar(novaPessoa);
 	}
 	
-	public boolean atualizar(Pessoa pessoaEditada) throws ControleVacinasException{
-		validarPessoa(pessoaEditada);
+	public boolean atualizar(Pessoa pessoaEditada) throws ControleVacinasException {
+		validarCamposObrigatorios(pessoaEditada);
+		
 		return repository.alterar(pessoaEditada);
 	}
-	
-	public boolean excluir(int id){
+
+	public boolean excluir(int id) {
 		return repository.excluir(id);
 	}
-	
-	public Pessoa consultarPorId(int id){
+
+	public Pessoa consultarPorId(int id) {
 		return repository.consultarPorId(id);
 	}
-	
-	public List<Pessoa> consultarTodas(){
+
+	public List<Pessoa> consultarTodas() {
 		return repository.consultarTodos();
 	}
 	
-	private void validarPessoa(Pessoa pessoa) throws ControleVacinasException{
-		if(pessoa.getNome() == null || pessoa.getNome() == "") {
-			throw new ControleVacinasException("O campo 'Nome' deve ser preenchido.");
+	private void validarCpf(Pessoa novaPessoa) throws ControleVacinasException {
+		if(repository.cpfJaCadastrado(novaPessoa.getCpf())) {
+			throw new ControleVacinasException("CPF " + novaPessoa.getCpf() + " já cadastrado "); 
 		}
-		if(pessoa.getDtnascimento() == null) {
-			throw new ControleVacinasException("O campo 'Data de nascimento' deve ser preenchido.");
+	}
+
+	private void validarCamposObrigatorios(Pessoa p) throws ControleVacinasException{
+		String mensagemValidacao = "";
+		if(p.getNome() == null || p.getNome().isEmpty()) {
+			mensagemValidacao += " - informe o nome \n";
 		}
-		if(pessoa.getSexo() == null || pessoa.getSexo() == "") {
-			throw new ControleVacinasException("O campo 'Sexo' deve ser preenchido.");
+		if(p.getDataNascimento() == null) {
+			mensagemValidacao += " - informe a data de nascimento \n";
 		}
-		if(pessoa.getCpf() == null || pessoa.getCpf() == "") {
-			throw new ControleVacinasException("O campo 'CPF' deve ser preenchido.");
-		} 
-		if(pessoa.getTipo() == null || pessoa.getTipo() == "") {
-			throw new ControleVacinasException("O campo 'Tipo' deve ser preenchido.");
+		if(p.getCpf() == null || p.getCpf().isEmpty() || p.getCpf().length() != 11) {
+			mensagemValidacao += " - informe o CPF";
 		}
-	}	
+		if(p.getSexo() == ' ') {
+			mensagemValidacao += " - informe o sexo";
+		}
+		if(p.getTipo() < 1 || p.getTipo() > 3) {
+			mensagemValidacao += " - informe o tipo (entre 1 e 3)";
+		}
+		
+		if(!mensagemValidacao.isEmpty()) {
+			throw new ControleVacinasException("Preencha o(s) seguinte(s) campo(s) \n " + mensagemValidacao);
+		}
+	}
 }
