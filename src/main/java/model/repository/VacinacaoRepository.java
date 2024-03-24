@@ -28,9 +28,7 @@ public class VacinacaoRepository implements BaseRepository<Vacinacao> {
 			stmt.execute();
 			ResultSet resultado = stmt.getGeneratedKeys();
 			if(resultado.next()) {
-				System.out.println("ID1");
 				novaVacinacao.setId(resultado.getInt(1));
-				System.out.println("ID");
 			}
 		} catch (SQLException e) {
 			System.out.println("Erro ao salvar nova aplicação");
@@ -148,5 +146,37 @@ public class VacinacaoRepository implements BaseRepository<Vacinacao> {
 			Banco.closeConnection(conn);
 		}
 		return aplicacoes;
+	}
+	
+	public ArrayList<Vacinacao> consultarVacinasPorPessoa(int idpessoa){
+		ArrayList<Vacinacao> aplicacoesPessoa = new ArrayList<>();
+		Connection conn = Banco.getConnection();
+		Statement stmt = Banco.getStatement(conn);
+		
+		ResultSet resultado = null;
+		String query = " SELECT * FROM aplicacao_vacina WHERE id_pessoa = "+idpessoa;
+		try {
+			resultado = stmt.executeQuery(query);
+			VacinaRepository vacinaRepository = new VacinaRepository();
+			
+			while(resultado.next()){
+				Vacinacao vacinacao = new Vacinacao();
+				vacinacao.setId(resultado.getInt("ID"));
+				vacinacao.setIdPessoa(resultado.getInt("ID_PESSOA"));
+				vacinacao.setDataAplicacao(resultado.getDate("DATA_APLICACAO").toLocalDate());
+				vacinacao.setAvaliacao(resultado.getInt("AVALIACAO"));
+				vacinacao.setVacina(vacinaRepository.consultarPorId(resultado.getInt("ID_VACINA")));
+				
+				aplicacoesPessoa.add(vacinacao);
+			}
+		} catch(SQLException e){
+			System.out.println("Erro consultar as aplicações de vacinas da pessoa de id = " + idpessoa);
+			System.out.println("Erro: " + e.getMessage());
+		} finally {
+			Banco.closeResultSet(resultado);
+			Banco.closeStatement(stmt);
+			Banco.closeConnection(conn);
+		}
+		return aplicacoesPessoa;
 	}
 }

@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import model.entity.Pais;
 import model.entity.Pessoa;
 import model.entity.Vacina;
 
@@ -15,7 +16,7 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 
 	@Override
 	public Vacina salvar(Vacina novaVacina) {
-		String sql = " INSERT INTO vacina(id_pesquisador, nome, pais_origem, estagio_pesquisa, data_inicio_pesquisa) "
+		String sql = " INSERT INTO vacina(id_pesquisador, nome, id_pais_origem, estagio_pesquisa, data_inicio_pesquisa) "
 				   + " VALUES(?, ?, ?, ?, ?) ";
 		Connection conexao = Banco.getConnection();
 		PreparedStatement pstmt = Banco.getPreparedStatementWithPk(conexao, sql);
@@ -23,7 +24,7 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 		try {
 			pstmt.setInt(1, novaVacina.getPesquisadorResponsavel().getId());
 			pstmt.setString(2, novaVacina.getNome());
-			pstmt.setString(3, novaVacina.getPaisOrigem());
+			pstmt.setInt(3, novaVacina.getPaisOrigem().getId());
 			pstmt.setInt(4, novaVacina.getEstagio());
 			pstmt.setDate(5, Date.valueOf(novaVacina.getDataInicioPesquisa()));
 			
@@ -64,17 +65,16 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 	public boolean alterar(Vacina vacinaEditada) {
 		boolean alterou = false;
 		String query = " UPDATE vacina "
-				     + " SET id_pesquisador=?, nome=?, pais_origem=?, estagio_pesquisa=?, data_inicio_pesquisa=? "
+				     + " SET id_pesquisador=?, nome=?, id_pais_origem=?, estagio_pesquisa=?, data_inicio_pesquisa=? "
 				     + " WHERE id=? ";
 		Connection conn = Banco.getConnection();
 		PreparedStatement stmt = Banco.getPreparedStatementWithPk(conn, query);
 		try {
 			stmt.setInt(1, vacinaEditada.getPesquisadorResponsavel().getId());
 			stmt.setString(2, vacinaEditada.getNome());
-			stmt.setString(3, vacinaEditada.getPaisOrigem());
+			stmt.setInt(3, vacinaEditada.getPaisOrigem().getId());
 			stmt.setInt(4, vacinaEditada.getEstagio());
 			stmt.setDate(5, Date.valueOf(vacinaEditada.getDataInicioPesquisa()));
-			
 			
 			stmt.setInt(6, vacinaEditada.getId());
 			alterou = stmt.executeUpdate() > 0;
@@ -100,11 +100,13 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 		try{
 			resultado = stmt.executeQuery(query);
 			PessoaRepository pessoaRepository = new PessoaRepository();
+			PaisRepository paisRepository = new PaisRepository();
 			if(resultado.next()){
 				vacina = new Vacina();
 				vacina.setId(Integer.parseInt(resultado.getString("ID")));
 				vacina.setNome(resultado.getString("NOME"));
-				vacina.setPaisOrigem(resultado.getString("PAIS_ORIGEM"));
+				Pais pais = paisRepository.consultarPorId(resultado.getInt("ID_PAIS_ORIGEM"));
+				vacina.setPaisOrigem(pais);
 				vacina.setEstagio(resultado.getInt("ESTAGIO_PESQUISA"));
 				vacina.setDataInicioPesquisa(resultado.getDate("DATA_INICIO_PESQUISA").toLocalDate()); 
 				Pessoa pesquisador = pessoaRepository.consultarPorId(resultado.getInt("ID_PESQUISADOR"));
@@ -133,11 +135,13 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 		try{
 			resultado = stmt.executeQuery(query);
 			PessoaRepository pessoaRepository = new PessoaRepository();
+			PaisRepository paisRepository = new PaisRepository();
 			while(resultado.next()){
 				Vacina vacina = new Vacina();
 				vacina.setId(Integer.parseInt(resultado.getString("ID")));
 				vacina.setNome(resultado.getString("NOME"));
-				vacina.setPaisOrigem(resultado.getString("PAIS_ORIGEM"));
+				Pais pais = paisRepository.consultarPorId(resultado.getInt("ID_PAIS_ORIGEM"));
+				vacina.setPaisOrigem(pais);
 				vacina.setEstagio(resultado.getInt("ESTAGIO_PESQUISA"));
 				vacina.setDataInicioPesquisa(resultado.getDate("DATA_INICIO_PESQUISA").toLocalDate()); 
 				Pessoa pesquisador = pessoaRepository.consultarPorId(resultado.getInt("ID_PESQUISADOR"));
@@ -165,11 +169,13 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 		try{
 			resultado = stmt.executeQuery(query);
 			PessoaRepository pessoaRepository = new PessoaRepository();
+			PaisRepository paisRepository = new PaisRepository();
 			while(resultado.next()){
 				Vacina vacina = new Vacina();
 				vacina.setId(Integer.parseInt(resultado.getString("ID")));
 				vacina.setNome(resultado.getString("NOME"));
-				vacina.setPaisOrigem(resultado.getString("PAIS_ORIGEM"));
+				Pais pais = paisRepository.consultarPorId(resultado.getInt("ID_PAIS_ORIGEM"));
+				vacina.setPaisOrigem(pais);
 				vacina.setEstagio(resultado.getInt("ESTAGIO_PESQUISA"));
 				vacina.setDataInicioPesquisa(resultado.getDate("DATA_INICIO_PESQUISA").toLocalDate()); 
 				Pessoa pesquisador = pessoaRepository.consultarPorId(resultado.getInt("ID_PESQUISADOR"));

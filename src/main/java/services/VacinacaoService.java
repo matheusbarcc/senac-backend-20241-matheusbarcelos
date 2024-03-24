@@ -35,6 +35,10 @@ public class VacinacaoService {
 		return repository.consultarTodos();
 	}
 	
+	public List<Vacinacao> consultarPorPessoa(int idpessoa) {
+		return repository.consultarVacinasPorPessoa(idpessoa);
+	}
+	
 	private void validarCamposObrigatorios(Vacinacao v) throws ControleVacinasException{
 		String mensagemValidacao = "";
 		if(v.getIdPessoa() < 1) {

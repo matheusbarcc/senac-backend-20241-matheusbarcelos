@@ -51,4 +51,10 @@ public class VacinacaoController {
 	public List<Vacinacao> consultarTodas(){
 		return service.consultarTodas();
 	}
+	
+	@GET
+	@Path("/pessoa/{idpessoa}")
+	public Vacinacao consultarPorPessoa(@PathParam("idpessoa") int idpessoa) {
+		return service.consultarPorId(idpessoa);
+	}
 }
