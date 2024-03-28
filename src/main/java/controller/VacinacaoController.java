@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import exception.ControleVacinasException;
@@ -12,7 +13,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import model.entity.Pessoa;
 import model.entity.Vacinacao;
 import services.VacinacaoService;
 
@@ -54,7 +54,13 @@ public class VacinacaoController {
 	
 	@GET
 	@Path("/pessoa/{idpessoa}")
-	public Vacinacao consultarPorPessoa(@PathParam("idpessoa") int idpessoa) {
-		return service.consultarPorId(idpessoa);
+	public List<Vacinacao> consultarPorPessoa(@PathParam("idpessoa") int idpessoa) {
+		return service.consultarPorPessoa(idpessoa);
+	}
+	
+	@GET
+	@Path("/vacina/{id}")
+	public List<Vacinacao> consultarPorVacina(@PathParam("id") int id) {
+		return service.consultarPorVacina(id);
 	}
 }

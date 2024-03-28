@@ -7,13 +7,13 @@ public class Vacinacao {
 	private int idPessoa;
 	private Vacina vacina;
 	private LocalDate dataAplicacao;
-	private int avaliacao;
+	private double avaliacao;
 	
 	public Vacinacao() {
 		
 	}
 	
-	public Vacinacao(int id, int idPessoa, Vacina vacina, LocalDate dataAplicacao, int avaliacao) {
+	public Vacinacao(int id, int idPessoa, Vacina vacina, LocalDate dataAplicacao, double avaliacao) {
 		super();
 		this.id = id;
 		this.idPessoa = idPessoa;
@@ -54,11 +54,11 @@ public class Vacinacao {
 		this.dataAplicacao = dataAplicacao;
 	}
 
-	public int getAvaliacao() {
+	public double getAvaliacao() {
 		return avaliacao;
 	}
 
-	public void setAvaliacao(int avaliacao) {
+	public void setAvaliacao(double avaliacao) {
 		this.avaliacao = avaliacao;
 	}
 }

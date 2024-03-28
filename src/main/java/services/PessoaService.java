@@ -5,10 +5,12 @@ import java.util.List;
 import exception.ControleVacinasException;
 import model.entity.Pessoa;
 import model.repository.PessoaRepository;
+import model.repository.VacinacaoRepository;
 
 public class PessoaService {
 
 	private PessoaRepository repository = new PessoaRepository();
+	private VacinacaoRepository vacinacaoRepository = new VacinacaoRepository();
 	
 	public Pessoa salvar(Pessoa novaPessoa) throws ControleVacinasException {
 		validarCamposObrigatorios(novaPessoa);
@@ -24,8 +26,14 @@ public class PessoaService {
 		return repository.alterar(pessoaEditada);
 	}
 
-	public boolean excluir(int id) {
-		return repository.excluir(id);
+	public boolean excluir(int id) throws ControleVacinasException{
+		if(vacinacaoRepository.consultarVacinasPorPessoa(id).isEmpty()) {
+			return repository.excluir(id);			
+		} else {
+			throw new ControleVacinasException("A pessoa de id " + id + " não pode ser excluída pois possui " + vacinacaoRepository.consultarVacinasPorPessoa(id).size()
+					+ " vacinações cadastradas.");
+		}
+		
 	}
 
 	public Pessoa consultarPorId(int id) {

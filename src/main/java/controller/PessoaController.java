@@ -37,7 +37,7 @@ public class PessoaController {
 	
 	@DELETE
 	@Path("/{id}")
-	public boolean excluir(@PathParam("id") int id) {
+	public boolean excluir(@PathParam("id") int id) throws ControleVacinasException {
 		return service.excluir(id);
 	}
 	

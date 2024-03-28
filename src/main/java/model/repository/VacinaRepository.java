@@ -16,8 +16,8 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 
 	@Override
 	public Vacina salvar(Vacina novaVacina) {
-		String sql = " INSERT INTO vacina(id_pesquisador, nome, id_pais_origem, estagio_pesquisa, data_inicio_pesquisa) "
-				   + " VALUES(?, ?, ?, ?, ?) ";
+		String sql = " INSERT INTO vacina(id_pesquisador, nome, id_pais_origem, estagio_pesquisa, data_inicio_pesquisa, media) "
+				   + " VALUES(?, ?, ?, ?, ?, ?) ";
 		Connection conexao = Banco.getConnection();
 		PreparedStatement pstmt = Banco.getPreparedStatementWithPk(conexao, sql);
 		
@@ -27,6 +27,7 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 			pstmt.setInt(3, novaVacina.getPaisOrigem().getId());
 			pstmt.setInt(4, novaVacina.getEstagio());
 			pstmt.setDate(5, Date.valueOf(novaVacina.getDataInicioPesquisa()));
+			pstmt.setDouble(6, novaVacina.getMedia());
 			
 			pstmt.execute();
 			ResultSet resultado = pstmt.getGeneratedKeys();
@@ -65,8 +66,8 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 	public boolean alterar(Vacina vacinaEditada) {
 		boolean alterou = false;
 		String query = " UPDATE vacina "
-				     + " SET id_pesquisador=?, nome=?, id_pais_origem=?, estagio_pesquisa=?, data_inicio_pesquisa=? "
-				     + " WHERE id=? ";
+				     + " SET id_pesquisador=?, nome=?, id_pais_origem=?, estagio_pesquisa=?, data_inicio_pesquisa=?, "
+				     + " media=? WHERE id=? ";
 		Connection conn = Banco.getConnection();
 		PreparedStatement stmt = Banco.getPreparedStatementWithPk(conn, query);
 		try {
@@ -75,8 +76,9 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 			stmt.setInt(3, vacinaEditada.getPaisOrigem().getId());
 			stmt.setInt(4, vacinaEditada.getEstagio());
 			stmt.setDate(5, Date.valueOf(vacinaEditada.getDataInicioPesquisa()));
+			stmt.setDouble(6, vacinaEditada.getMedia());
 			
-			stmt.setInt(6, vacinaEditada.getId());
+			stmt.setInt(7, vacinaEditada.getId());
 			alterou = stmt.executeUpdate() > 0;
 		} catch (SQLException erro) {
 			System.out.println("Erro ao atualizar vacina");

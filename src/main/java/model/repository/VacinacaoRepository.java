@@ -23,7 +23,7 @@ public class VacinacaoRepository implements BaseRepository<Vacinacao> {
 			stmt.setInt(1, novaVacinacao.getIdPessoa());
 			stmt.setInt(2, novaVacinacao.getVacina().getId());
 			stmt.setDate(3, Date.valueOf(novaVacinacao.getDataAplicacao()));
-			stmt.setInt(4, novaVacinacao.getAvaliacao());
+			stmt.setDouble(4, novaVacinacao.getAvaliacao());
 			
 			stmt.execute();
 			ResultSet resultado = stmt.getGeneratedKeys();
@@ -70,7 +70,7 @@ public class VacinacaoRepository implements BaseRepository<Vacinacao> {
 			stmt.setInt(1, vacinacaoEditada.getIdPessoa());
 			stmt.setInt(2, vacinacaoEditada.getVacina().getId());
 			stmt.setDate(3, Date.valueOf(vacinacaoEditada.getDataAplicacao()));
-			stmt.setInt(4, vacinacaoEditada.getAvaliacao());
+			stmt.setDouble(4, vacinacaoEditada.getAvaliacao());
 			
 			stmt.setInt(5, vacinacaoEditada.getId());
 			alterou = stmt.executeUpdate() > 0;
@@ -101,7 +101,7 @@ public class VacinacaoRepository implements BaseRepository<Vacinacao> {
 				vacinacao.setId(resultado.getInt("ID"));
 				vacinacao.setIdPessoa(resultado.getInt("ID_PESSOA"));
 				vacinacao.setDataAplicacao(resultado.getDate("DATA_APLICACAO").toLocalDate());
-				vacinacao.setAvaliacao(resultado.getInt("AVALIACAO"));
+				vacinacao.setAvaliacao(resultado.getDouble("AVALIACAO"));
 				vacinacao.setVacina(vacinaRepository.consultarPorId(resultado.getInt("ID_VACINA")));
 			}
 		} catch (SQLException erro){
@@ -132,7 +132,7 @@ public class VacinacaoRepository implements BaseRepository<Vacinacao> {
 				vacinacao.setId(resultado.getInt("ID"));
 				vacinacao.setIdPessoa(resultado.getInt("ID_PESSOA"));
 				vacinacao.setDataAplicacao(resultado.getDate("DATA_APLICACAO").toLocalDate());
-				vacinacao.setAvaliacao(resultado.getInt("AVALIACAO"));
+				vacinacao.setAvaliacao(resultado.getDouble("AVALIACAO"));
 				vacinacao.setVacina(vacinaRepository.consultarPorId(resultado.getInt("ID_VACINA")));
 				
 				aplicacoes.add(vacinacao);
@@ -164,7 +164,7 @@ public class VacinacaoRepository implements BaseRepository<Vacinacao> {
 				vacinacao.setId(resultado.getInt("ID"));
 				vacinacao.setIdPessoa(resultado.getInt("ID_PESSOA"));
 				vacinacao.setDataAplicacao(resultado.getDate("DATA_APLICACAO").toLocalDate());
-				vacinacao.setAvaliacao(resultado.getInt("AVALIACAO"));
+				vacinacao.setAvaliacao(resultado.getDouble("AVALIACAO"));
 				vacinacao.setVacina(vacinaRepository.consultarPorId(resultado.getInt("ID_VACINA")));
 				
 				aplicacoesPessoa.add(vacinacao);
@@ -178,5 +178,37 @@ public class VacinacaoRepository implements BaseRepository<Vacinacao> {
 			Banco.closeConnection(conn);
 		}
 		return aplicacoesPessoa;
+	}
+	
+	public ArrayList<Vacinacao> consultarVacinacoesPorVacina(int id){
+		ArrayList<Vacinacao> aplicacoesVacina = new ArrayList<>();
+		Connection conn = Banco.getConnection();
+		Statement stmt = Banco.getStatement(conn);
+		
+		ResultSet resultado = null;
+		String query = " SELECT * FROM aplicacao_vacina WHERE id_vacina = "+id;
+		try {
+			resultado = stmt.executeQuery(query);
+			VacinaRepository vacinaRepository = new VacinaRepository();
+			
+			while(resultado.next()){
+				Vacinacao vacinacao = new Vacinacao();
+				vacinacao.setId(resultado.getInt("ID"));
+				vacinacao.setIdPessoa(resultado.getInt("ID_PESSOA"));
+				vacinacao.setDataAplicacao(resultado.getDate("DATA_APLICACAO").toLocalDate());
+				vacinacao.setAvaliacao(resultado.getDouble("AVALIACAO"));
+				vacinacao.setVacina(vacinaRepository.consultarPorId(resultado.getInt("ID_VACINA")));
+				
+				aplicacoesVacina.add(vacinacao);
+			}
+		} catch(SQLException e){
+			System.out.println("Erro consultar as aplicações de vacinas da vacina de id = " + id);
+			System.out.println("Erro: " + e.getMessage());
+		} finally {
+			Banco.closeResultSet(resultado);
+			Banco.closeStatement(stmt);
+			Banco.closeConnection(conn);
+		}
+		return aplicacoesVacina;
 	}
 }
