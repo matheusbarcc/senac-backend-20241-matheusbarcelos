@@ -4,6 +4,7 @@ import java.util.List;
 
 import exception.ControleVacinasException;
 import model.entity.Vacina;
+import model.entity.VacinaSeletor;
 import model.repository.VacinaRepository;
 import model.repository.VacinacaoRepository;
 
@@ -39,5 +40,9 @@ public class VacinaService {
 	
 	public List<Vacina> consultarPorResponsavel(int id){
 		return repository.consultarPorResponsavel(id);
+	}
+	
+	public List<Vacina> consultarComSeletor(VacinaSeletor seletor){
+		return repository.consultarComSeletor(seletor);
 	}
 }

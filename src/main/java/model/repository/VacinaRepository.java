@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import model.entity.Pais;
 import model.entity.Pessoa;
 import model.entity.Vacina;
+import model.entity.VacinaSeletor;
 
 public class VacinaRepository implements BaseRepository<Vacina> {
 
@@ -145,9 +146,10 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 				Pais pais = paisRepository.consultarPorId(resultado.getInt("ID_PAIS_ORIGEM"));
 				vacina.setPaisOrigem(pais);
 				vacina.setEstagio(resultado.getInt("ESTAGIO_PESQUISA"));
-				vacina.setDataInicioPesquisa(resultado.getDate("DATA_INICIO_PESQUISA").toLocalDate()); 
+				vacina.setDataInicioPesquisa(resultado.getDate("DATA_INICIO_PESQUISA").toLocalDate());
 				Pessoa pesquisador = pessoaRepository.consultarPorId(resultado.getInt("ID_PESQUISADOR"));
 				vacina.setPesquisadorResponsavel(pesquisador);
+				vacina.setMedia(resultado.getDouble("MEDIA"));
 				vacinas.add(vacina);
 			}
 		} catch (SQLException erro){
@@ -193,5 +195,107 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 			Banco.closeConnection(conn);
 		}
 		return vacinas;
+	}
+	
+	public ArrayList<Vacina> consultarComSeletor(VacinaSeletor seletor){
+		ArrayList<Vacina> vacinas = new ArrayList<>();
+		Connection conn = Banco.getConnection();
+		Statement stmt = Banco.getStatement(conn);
+		
+		ResultSet resultado = null;
+		String sql = " SELECT v.* FROM vacina v "
+					+ " INNER JOIN pais p on v.id_pais_origem = p.id "
+					+ " INNER JOIN pessoa pe on v.id_pesquisador = pe.id ";
+			
+		if(seletor.temFiltro()) {
+			sql = preencherFiltros(seletor, sql);
+		}
+		
+		try {
+			resultado = stmt.executeQuery(sql);
+			while(resultado.next()) {
+				Vacina vacina = construirDoResultSet(resultado);
+				vacinas.add(vacina);
+			}
+		} catch(SQLException e) {
+			System.out.println("Erro ao consultar vacinas com seletor");
+			System.out.println("Erro: " + e.getMessage());
+		} finally {
+			Banco.closeResultSet(resultado);
+			Banco.closeStatement(stmt);
+			Banco.closeConnection(conn);
+		}
+		return vacinas;
+	}
+	
+	public String preencherFiltros(VacinaSeletor seletor, String sql) {
+		sql += " WHERE ";
+		boolean primeiro = true;
+		
+		if(seletor.getNome() != null) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			sql += "upper(v.nome) LIKE UPPER('" + seletor.getNome() + "%')";
+			primeiro = false;
+		}
+		
+		if(seletor.getPaisOrigem() != null && seletor.getPaisOrigem().getNome() != null) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			sql += "upper(p.nome) LIKE UPPER('" + seletor.getPaisOrigem().getNome() + "%')";
+			primeiro = false;
+		}
+		if(seletor.getPesquisadorResponsavel() != null &&  seletor.getPesquisadorResponsavel().getNome() != null) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			sql += "upper(pe.nome) LIKE UPPER('" + seletor.getPesquisadorResponsavel().getNome() + "%')";
+			primeiro = false;
+		}
+		if(seletor.getEstagio() > 0) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			
+			sql += " v.estagio_pesquisa =" + seletor.getEstagio();
+			primeiro = false;
+		}
+		if(seletor.getDataInicioPesquisa() != null) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			
+			sql += " v.data_inicio_pesquisa =" + seletor.getDataFinalPesquisa();
+			primeiro = false;
+		}
+		if(seletor.getDataFinalPesquisa() != null) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			
+			sql += " v.data_inicio_pesquisa =" + seletor.getDataFinalPesquisa();
+			primeiro = false;
+		}
+		
+		return sql;
+	}
+	
+	private Vacina construirDoResultSet(ResultSet resultado) throws SQLException{
+		Vacina v = new Vacina();
+		PessoaRepository pessoaRepository = new PessoaRepository();
+		PaisRepository paisRepository = new PaisRepository();
+		
+		v.setId(resultado.getInt("ID"));
+		v.setNome(resultado.getString("NOME"));
+		Pais pais = paisRepository.consultarPorId(resultado.getInt("ID_PAIS_ORIGEM"));
+		v.setPaisOrigem(pais);
+		Pessoa pesquisador = pessoaRepository.consultarPorId(resultado.getInt("ID_PESQUISADOR"));
+		v.setPesquisadorResponsavel(pesquisador);
+		v.setEstagio(resultado.getInt("ESTAGIO_PESQUISA"));
+		v.setDataInicioPesquisa(resultado.getDate("DATA_INICIO_PESQUISA").toLocalDate());
+		
+		return v;
 	}
 }
