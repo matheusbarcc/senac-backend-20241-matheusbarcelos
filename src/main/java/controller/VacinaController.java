@@ -59,7 +59,7 @@ public class VacinaController {
 		return service.consultarPorResponsavel(id);
 	}
 	
-	@GET
+	@POST
 	@Path("/filtro")
 	public List<Vacina> consultarComSeletor(VacinaSeletor seletor){
 		return service.consultarComSeletor(seletor);

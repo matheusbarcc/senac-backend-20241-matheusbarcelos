@@ -240,18 +240,18 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 			primeiro = false;
 		}
 		
-		if(seletor.getPaisOrigem() != null && seletor.getPaisOrigem().getNome() != null) {
+		if(seletor.getNomePais() != null) {
 			if(!primeiro) {
 				sql += " AND ";
 			}
-			sql += "upper(p.nome) LIKE UPPER('" + seletor.getPaisOrigem().getNome() + "%')";
+			sql += "upper(p.nome) LIKE UPPER('" + seletor.getNomePais() + "%')";
 			primeiro = false;
 		}
-		if(seletor.getPesquisadorResponsavel() != null &&  seletor.getPesquisadorResponsavel().getNome() != null) {
+		if(seletor.getNomePesquisador() != null &&  seletor.getNomePesquisador() != null) {
 			if(!primeiro) {
 				sql += " AND ";
 			}
-			sql += "upper(pe.nome) LIKE UPPER('" + seletor.getPesquisadorResponsavel().getNome() + "%')";
+			sql += "upper(pe.nome) LIKE UPPER('" + seletor.getNomePesquisador() + "%')";
 			primeiro = false;
 		}
 		if(seletor.getEstagio() > 0) {

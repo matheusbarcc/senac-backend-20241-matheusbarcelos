@@ -5,8 +5,8 @@ import java.time.LocalDate;
 public class VacinaSeletor {
 	
 	private String nome;
-	private Pais paisOrigem;
-	private Pessoa pesquisadorResponsavel;
+	private String nomePais;
+	private String nomePesquisador;
 	private int estagio;
 	private LocalDate dataInicioPesquisa;
 	private LocalDate dataFinalPesquisa;
@@ -15,13 +15,13 @@ public class VacinaSeletor {
 	public VacinaSeletor() {
 		super();
 	}
-
-	public VacinaSeletor(String nome, Pais paisOrigem, Pessoa pesquisadorResponsavel, int estagio,
+	
+	public VacinaSeletor(String nome, String nomePais, String nomePesquisador, int estagio,
 			LocalDate dataInicioPesquisa, LocalDate dataFinalPesquisa) {
 		super();
 		this.nome = nome;
-		this.paisOrigem = paisOrigem;
-		this.pesquisadorResponsavel = pesquisadorResponsavel;
+		this.nomePais = nomePais;
+		this.nomePesquisador = nomePesquisador;
 		this.estagio = estagio;
 		this.dataInicioPesquisa = dataInicioPesquisa;
 		this.dataFinalPesquisa = dataFinalPesquisa;
@@ -35,20 +35,20 @@ public class VacinaSeletor {
 		this.nome = nome;
 	}
 
-	public Pais getPaisOrigem() {
-		return paisOrigem;
+	public String getNomePais() {
+		return nomePais;
 	}
 
-	public void setPaisOrigem(Pais paisOrigem) {
-		this.paisOrigem = paisOrigem;
+	public void setNomePais(String nomePais) {
+		this.nomePais = nomePais;
 	}
 
-	public Pessoa getPesquisadorResponsavel() {
-		return pesquisadorResponsavel;
+	public String getNomePesquisador() {
+		return nomePesquisador;
 	}
 
-	public void setPesquisadorResponsavel(Pessoa pesquisadorResponsavel) {
-		this.pesquisadorResponsavel = pesquisadorResponsavel;
+	public void setNomePesquisador(String nomePesquisador) {
+		this.nomePesquisador = nomePesquisador;
 	}
 
 	public int getEstagio() {
@@ -79,8 +79,8 @@ public class VacinaSeletor {
 	// @return true caso ao menos um dos atributos tenho sido preenchido
 	public boolean temFiltro() {
 		return (this.nome != null && this.nome.trim().length() > 0)
-				|| (this.paisOrigem != null && this.paisOrigem.getNome() != null && this.paisOrigem.getNome().trim().length() > 0)
-				|| (this.pesquisadorResponsavel != null && this.pesquisadorResponsavel.getNome() != null && this.pesquisadorResponsavel.getNome().trim().length() > 0)
+				|| (this.nomePais != null && this.nomePais.trim().length() > 0)
+				|| (this.nomePesquisador != null && this.nomePesquisador.trim().length() > 0)
 				|| (this.estagio > 0)
 				|| (this.dataInicioPesquisa != null)
 				|| (this.dataFinalPesquisa != null);
