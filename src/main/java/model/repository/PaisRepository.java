@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import model.entity.Pais;
 
@@ -30,6 +31,34 @@ public class PaisRepository {
 		}
 		
 		return novoPais;
+	}
+	
+	public ArrayList<Pais> consultarTodos(){
+		ArrayList<Pais> paises = new ArrayList<>();
+		Connection conn = Banco.getConnection();
+		Statement stmt = Banco.getStatement(conn);
+		
+		ResultSet resultado = null;
+		String query = " SELECT * FROM pais";
+		
+		try {
+			resultado = stmt.executeQuery(query);
+			while(resultado.next()) {
+				Pais pais = new Pais();
+				pais.setId(resultado.getInt("ID"));
+				pais.setNome(resultado.getString("NOME"));
+				pais.setSigla(resultado.getString("SIGLA"));
+				paises.add(pais);
+			}
+		} catch (SQLException erro) {
+			System.out.println("Erro ao consultar todos os paises");
+			System.out.println("Erro: " + erro.getMessage());
+		} finally {
+			Banco.closeResultSet(resultado);
+			Banco.closeStatement(stmt);
+			Banco.closeConnection(conn);
+		}
+		return paises;
 	}
 	
 	public Pais consultarPorId(int id) {

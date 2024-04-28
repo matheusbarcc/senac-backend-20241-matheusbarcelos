@@ -1,5 +1,7 @@
 package services;
 
+import java.util.List;
+
 import exception.ControleVacinasException;
 import model.entity.Pais;
 import model.repository.PaisRepository;
@@ -17,5 +19,9 @@ public class PaisService {
 		if(novoPais.getSigla().length() > 2) {
 			throw new ControleVacinasException("A sigla deve ser composta por apena 2 letras.");
 		}
+	}
+	
+	public List<Pais> consultarTodos(){
+		return repository.consultarTodos();
 	}
 }
