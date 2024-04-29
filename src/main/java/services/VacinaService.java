@@ -25,8 +25,8 @@ public class VacinaService {
 		if(vacinacaoRepository.consultarVacinasPorPessoa(id).isEmpty()) {
 			return repository.excluir(id);			
 		} else {
-			throw new ControleVacinasException("A vacina de id " + id + " não pode ser excluída pois possui " + vacinacaoRepository.consultarVacinasPorPessoa(id).size()
-					+ " aplicações cadastradas.");
+			throw new ControleVacinasException("A vacina não pode ser excluída pois possui " + vacinacaoRepository.consultarVacinasPorPessoa(id).size()
+					+ " aplicação(s) cadastrada(s).");
 		}
 	}
 	

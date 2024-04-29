@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import model.entity.Pais;
@@ -15,6 +16,8 @@ import model.entity.VacinaSeletor;
 
 public class VacinaRepository implements BaseRepository<Vacina> {
 
+	LocalDate dataAtual = LocalDate.now();
+	
 	@Override
 	public Vacina salvar(Vacina novaVacina) {
 		String sql = " INSERT INTO vacina(id_pesquisador, nome, id_pais_origem, estagio_pesquisa, data_inicio_pesquisa, media) "
@@ -262,12 +265,19 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 			sql += " v.estagio_pesquisa =" + seletor.getEstagio();
 			primeiro = false;
 		}
+		if((seletor.getDataInicioPesquisa() != null) && (seletor.getDataFinalPesquisa() != null)) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			sql += " v.data_inicio_pesquisa BETWEEN '" + seletor.getDataInicioPesquisa() + "' AND '" + seletor.getDataFinalPesquisa() + "'";
+			primeiro = false;
+		}
 		if(seletor.getDataInicioPesquisa() != null) {
 			if(!primeiro) {
 				sql += " AND ";
 			}
 			
-			sql += " v.data_inicio_pesquisa =" + seletor.getDataFinalPesquisa();
+			sql += " v.data_inicio_pesquisa BETWEEN '" + seletor.getDataInicioPesquisa() + "' AND '" + dataAtual + "'";
 			primeiro = false;
 		}
 		if(seletor.getDataFinalPesquisa() != null) {
@@ -275,7 +285,7 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 				sql += " AND ";
 			}
 			
-			sql += " v.data_inicio_pesquisa =" + seletor.getDataFinalPesquisa();
+			sql += " v.data_inicio_pesquisa BETWEEN '0000-00-00' AND '" + seletor.getDataFinalPesquisa() + "'";
 			primeiro = false;
 		}
 		
