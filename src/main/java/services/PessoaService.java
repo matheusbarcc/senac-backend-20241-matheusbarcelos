@@ -44,6 +44,10 @@ public class PessoaService {
 		return repository.consultarTodos();
 	}
 	
+	public List<Pessoa> consultarPesquisadores(){
+		return repository.consultarPesquisadores();
+	}
+	
 	private void validarCpf(Pessoa novaPessoa) throws ControleVacinasException {
 		if(repository.cpfJaCadastrado(novaPessoa.getCpf())) {
 			throw new ControleVacinasException("CPF " + novaPessoa.getCpf() + " já cadastrado "); 

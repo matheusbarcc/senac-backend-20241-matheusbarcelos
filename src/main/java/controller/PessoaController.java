@@ -52,4 +52,10 @@ public class PessoaController {
 	public List<Pessoa> consultarTodas(){
 		return service.consultarTodas();
 	}
+	
+	@GET
+	@Path("/pesquisadores")
+	public List<Pessoa> consultarPesquisadores(){
+		return service.consultarPesquisadores();
+	}
 }

@@ -157,6 +157,40 @@ public class PessoaRepository implements BaseRepository<Pessoa> {
 		}
 		return pessoas;
 	}
+	
+	public ArrayList<Pessoa> consultarPesquisadores() {
+		ArrayList<Pessoa> pessoas = new ArrayList<>();
+		Connection conn = Banco.getConnection();
+		Statement stmt = Banco.getStatement(conn);
+		
+		ResultSet resultado = null;
+		String query = " SELECT * FROM pessoa WHERE tipo=1";
+		
+		try{
+			resultado = stmt.executeQuery(query);
+			PaisRepository paisRepository = new PaisRepository();
+			while(resultado.next()){
+				Pessoa pessoa = new Pessoa();
+				pessoa.setId(resultado.getInt("ID"));
+				pessoa.setNome(resultado.getString("NOME"));
+				pessoa.setCpf(resultado.getString("CPF"));
+				pessoa.setSexo(resultado.getString("SEXO").charAt(0));
+				pessoa.setDataNascimento(resultado.getDate("DATA_NASCIMENTO").toLocalDate()); 
+				pessoa.setTipo(resultado.getInt("TIPO"));
+				Pais pais = paisRepository.consultarPorId(resultado.getInt("ID_PAIS"));
+				pessoa.setPais(pais);
+				pessoas.add(pessoa);
+			}
+		} catch (SQLException erro){
+			System.out.println("Erro ao consultar todas as pessoas");
+			System.out.println("Erro: " + erro.getMessage());
+		} finally {
+			Banco.closeResultSet(resultado);
+			Banco.closeStatement(stmt);
+			Banco.closeConnection(conn);
+		}
+		return pessoas;
+	}
 
 	public boolean cpfJaCadastrado(String cpf) {
 		boolean cpfJaUtilizado = false;	
