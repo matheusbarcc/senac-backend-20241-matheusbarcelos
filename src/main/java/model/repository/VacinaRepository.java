@@ -214,6 +214,11 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 			sql = preencherFiltros(seletor, sql);
 		}
 		
+		if(seletor.temPaginacao()) {
+			sql += " LIMIT " + seletor.getLimite()
+					+ " OFFSET " + seletor.getOffset();
+		}
+		
 		try {
 			resultado = stmt.executeQuery(sql);
 			while(resultado.next()) {
@@ -229,6 +234,49 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 			Banco.closeConnection(conn);
 		}
 		return vacinas;
+	}
+	
+	public int count(VacinaSeletor seletor) {
+		Connection conn = Banco.getConnection();
+		Statement stmt = Banco.getStatement(conn);
+		int total = 0;
+		ResultSet resultado = null;
+		String sql = " SELECT count(*) FROM vacina v "
+				+ " INNER JOIN pais p on v.id_pais_origem = p.id "
+				+ " INNER JOIN pessoa pe on v.id_pesquisador = pe.id ";
+		
+		if(seletor.temFiltro()) {
+			sql = preencherFiltros(seletor, sql);
+		}
+		
+		try {
+			resultado = stmt.executeQuery(sql);
+			if(resultado.next()){
+				total = resultado.getInt(1);
+			}
+		} catch (SQLException e) {
+			System.out.println("Erro ao contar registros de vacinas");
+		 	System.out.println("Erro: " + e.getMessage());
+		} finally {
+			Banco.closeResultSet(resultado);
+			Banco.closeStatement(stmt);
+			Banco.closeConnection(conn);
+		}
+		return total;
+	}
+	
+	public int contarPaginas(VacinaSeletor seletor) {
+		int totalPaginas = 0;
+		int totalRegistros = this.count(seletor);
+		
+		totalPaginas = totalRegistros / seletor.getLimite();
+		int resto = totalRegistros % seletor.getLimite();
+		
+		if(resto > 0) {
+			totalPaginas++;
+		}
+		
+		return totalPaginas;
 	}
 	
 	public String preencherFiltros(VacinaSeletor seletor, String sql) {

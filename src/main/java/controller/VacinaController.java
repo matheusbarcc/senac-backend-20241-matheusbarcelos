@@ -64,4 +64,16 @@ public class VacinaController {
 	public List<Vacina> consultarComSeletor(VacinaSeletor seletor){
 		return service.consultarComSeletor(seletor);
 	}
+	
+	@POST
+	@Path("/count")
+	public int count(VacinaSeletor seletor) {
+		return service.count(seletor);
+	}
+	
+	@POST
+	@Path("/total-paginas")
+	public int contarPaginas(VacinaSeletor seletor) {
+		return service.contarPaginas(seletor);
+	}
 }

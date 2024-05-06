@@ -2,7 +2,7 @@ package model.entity;
 
 import java.time.LocalDate;
 
-public class VacinaSeletor{
+public class VacinaSeletor extends BaseSeletor{
 	
 	private String nome;
 	private String nomePais;
