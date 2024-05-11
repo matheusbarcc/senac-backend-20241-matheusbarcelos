@@ -5,6 +5,7 @@ import java.util.List;
 
 import exception.ControleVacinasException;
 import model.entity.Vacinacao;
+import model.entity.VacinacaoSeletor;
 import model.repository.PessoaRepository;
 import model.repository.VacinaRepository;
 import model.repository.VacinacaoRepository;
@@ -57,6 +58,10 @@ public class VacinacaoService {
 	
 	public List<Vacinacao> consultarPorVacina(int id) {
 		return repository.consultarVacinacoesPorVacina(id);
+	}
+	
+	public List<Vacinacao> consultarComSeletor(VacinacaoSeletor seletor){
+		return repository.consultarComSeletor(seletor);
 	}
 	
 	private void validarCamposObrigatorios(Vacinacao v) throws ControleVacinasException{

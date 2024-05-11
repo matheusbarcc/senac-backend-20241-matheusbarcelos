@@ -6,12 +6,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
+import model.entity.Pessoa;
+import model.entity.Vacina;
 import model.entity.Vacinacao;
+import model.entity.VacinacaoSeletor;
 	
 public class VacinacaoRepository implements BaseRepository<Vacinacao> {
 
+	LocalDate dataAtual = LocalDate.now();
+	
 	@Override
 	public Vacinacao salvar(Vacinacao novaVacinacao) {
 		String sql = " INSERT INTO aplicacao_vacina (id_pessoa, id_vacina, data_aplicacao, avaliacao) "
@@ -210,5 +216,112 @@ public class VacinacaoRepository implements BaseRepository<Vacinacao> {
 			Banco.closeConnection(conn);
 		}
 		return aplicacoesVacina;
+	}
+	
+	public ArrayList<Vacinacao> consultarComSeletor(VacinacaoSeletor seletor){
+		ArrayList<Vacinacao> vacinacoes = new ArrayList<>();
+		Connection conn = Banco.getConnection();
+		Statement stmt = Banco.getStatement(conn);
+		
+		ResultSet resultado = null;
+		
+		String sql = " SELECT av.* FROM aplicacao_vacina av "
+					+ " INNER JOIN pessoa p on av.id_pessoa = p.id "
+					+ " INNER JOIN vacina v on av.id_vacina = v.id ";
+		
+		if(seletor.temFiltro()) {
+			sql = preencherFiltros(seletor, sql);
+		}
+		if(seletor.temPaginacao()) {
+			sql += " LIMIT " + seletor.getLimite()
+					+ " OFFSET " + seletor.getOffset();
+		}
+		
+		try {
+			resultado = stmt.executeQuery(sql);
+			while(resultado.next()) {
+				Vacinacao vacinacao = construirDoResultSet(resultado);
+				vacinacoes.add(vacinacao);
+			}
+		} catch(SQLException e) {
+			System.out.println("Erro ao consultar vacinacoes com seletor");
+			System.out.println("Erro: " + e.getMessage());
+		} finally {
+			Banco.closeResultSet(resultado);
+			Banco.closeStatement(stmt);
+			Banco.closeConnection(conn);
+		}
+		
+		return vacinacoes;
+	}
+	
+	public String preencherFiltros(VacinacaoSeletor seletor, String sql) {
+		sql += " WHERE ";
+		boolean primeiro = true;
+		
+		if(seletor.getNomePessoa() != null) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			sql += "upper(p.nome) LIKE UPPER('" + seletor.getNomePessoa() + "%')";
+			primeiro = false;
+		}
+		
+		if(seletor.getNomeVacina() != null) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			sql += "upper(v.nome) LIKE UPPER('" + seletor.getNomeVacina() + "%')";
+			primeiro = false;
+		}
+		if((seletor.getDataAplicacaoInicio() != null) && (seletor.getDataAplicacaoFinal() != null)) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			sql += " av.data_aplicacao BETWEEN '" + seletor.getDataAplicacaoInicio() + "' AND '" + seletor.getDataAplicacaoFinal() + "'";
+			primeiro = false;
+		}
+		if(seletor.getDataAplicacaoInicio() != null) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			
+			sql += " av.data_aplicacao BETWEEN '" + seletor.getDataAplicacaoInicio() + "' AND '" + dataAtual + "'";
+			primeiro = false;
+		}
+		if(seletor.getDataAplicacaoFinal() != null) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			
+			sql += " av.data_aplicacao BETWEEN '0000-00-00' AND '" + seletor.getDataAplicacaoFinal() + "'";
+			primeiro = false;
+		}
+		if(seletor.getAvaliacao() > 0) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			
+			sql += " av.avaliacao =" + seletor.getAvaliacao();
+			primeiro = false;
+		}
+		return sql;
+	}
+	
+	private Vacinacao construirDoResultSet(ResultSet resultado) throws SQLException{
+		Vacinacao v = new Vacinacao();
+		VacinaRepository vacinaRepository = new VacinaRepository();
+		PessoaRepository pessoaRepository = new PessoaRepository();
+		
+		v.setId(resultado.getInt("ID"));
+		v.setIdPessoa(resultado.getInt("ID_PESSOA"));
+		Vacina vacina = vacinaRepository.consultarPorId(resultado.getInt("ID_VACINA"));
+		v.setVacina(vacina);
+		v.setDataAplicacao(resultado.getDate("DATA_APLICACAO").toLocalDate());
+		v.setAvaliacao(resultado.getInt("AVALIACAO"));
+		Pessoa pessoa = pessoaRepository.consultarPorId(resultado.getInt("ID_PESSOA"));
+		v.setPessoa(pessoa);
+		
+		return v;
 	}
 }
