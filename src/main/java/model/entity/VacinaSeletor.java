@@ -10,14 +10,14 @@ public class VacinaSeletor extends BaseSeletor{
 	private int estagio;
 	private LocalDate dataInicioPesquisa;
 	private LocalDate dataFinalPesquisa;
-	
-	
+	private double media;
+
 	public VacinaSeletor() {
 		super();
 	}
-	
+
 	public VacinaSeletor(String nome, String nomePais, String nomePesquisador, int estagio,
-			LocalDate dataInicioPesquisa, LocalDate dataFinalPesquisa) {
+			LocalDate dataInicioPesquisa, LocalDate dataFinalPesquisa, double media) {
 		super();
 		this.nome = nome;
 		this.nomePais = nomePais;
@@ -25,6 +25,7 @@ public class VacinaSeletor extends BaseSeletor{
 		this.estagio = estagio;
 		this.dataInicioPesquisa = dataInicioPesquisa;
 		this.dataFinalPesquisa = dataFinalPesquisa;
+		this.media = media;
 	}
 
 	public String getNome() {
@@ -74,6 +75,14 @@ public class VacinaSeletor extends BaseSeletor{
 	public void setDataFinalPesquisa(LocalDate dataFinalPesquisa) {
 		this.dataFinalPesquisa = dataFinalPesquisa;
 	}
+	
+	public double getMedia() {
+		return media;
+	}
+
+	public void setMedia(double media) {
+		this.media = media;
+	}
 
 	// Verifica se este seletor tem algum campo preenchido
 	// @return true caso ao menos um dos atributos tenho sido preenchido
@@ -83,6 +92,7 @@ public class VacinaSeletor extends BaseSeletor{
 				|| (this.nomePesquisador != null && this.nomePesquisador.trim().length() > 0)
 				|| (this.estagio > 0)
 				|| (this.dataInicioPesquisa != null)
-				|| (this.dataFinalPesquisa != null);
+				|| (this.dataFinalPesquisa != null)
+				|| (this.media > 0);
 	}
 }

@@ -336,6 +336,14 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 			sql += " v.data_inicio_pesquisa BETWEEN '0000-00-00' AND '" + seletor.getDataFinalPesquisa() + "'";
 			primeiro = false;
 		}
+		if(seletor.getMedia() != 0) {
+			if(!primeiro) {
+				sql += " AND ";
+			}
+			
+			sql += " v.media =" + seletor.getMedia();
+			primeiro = false;
+		}
 		
 		return sql;
 	}
@@ -353,6 +361,7 @@ public class VacinaRepository implements BaseRepository<Vacina> {
 		v.setPesquisadorResponsavel(pesquisador);
 		v.setEstagio(resultado.getInt("ESTAGIO_PESQUISA"));
 		v.setDataInicioPesquisa(resultado.getDate("DATA_INICIO_PESQUISA").toLocalDate());
+		v.setMedia(resultado.getDouble("MEDIA"));
 		
 		return v;
 	}
